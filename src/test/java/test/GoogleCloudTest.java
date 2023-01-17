@@ -37,7 +37,7 @@ public class GoogleCloudTest {
 
     @Test
     @Order(1)
-    @DisplayName("Open Pricing Calculator page")
+    @DisplayName("Search of the Pricing Calculator page")
     public void openPricingCalculator() {
         mainPage.openPage();
         fluentWait.until(ExpectedConditions.visibilityOf(mainPage.getCookiesOkBtn()));
@@ -49,17 +49,14 @@ public class GoogleCloudTest {
         fluentWait.until(ExpectedConditions.visibilityOf(searchResultsPage.getSearchResultsTab()));
         searchResultsPage.clickPricingCalculatorLink();
         assertEquals("https://cloud.google.com/products/calculator", driver.getCurrentUrl());
+        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(pricingCalculatorPage.getCloudSideFrame()));
+        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt((pricingCalculatorPage.getMyFrame())));
     }
 
     @Test
     @Order(2)
     @DisplayName("Fill the Calculation Form")
     public void fillCalculationForm() {
-        driver.get("https://cloud.google.com/products/calculator");
-        mainPage.closeCookiesPopUp();
-
-        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(pricingCalculatorPage.getCloudSideFrame()));
-        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt((pricingCalculatorPage.getMyFrame())));
         pricingCalculatorPage.enterNumberOfInstances();
         pricingCalculatorPage.selectOperatingSystem();
         pricingCalculatorPage.selectProvisioningModel();
@@ -70,15 +67,15 @@ public class GoogleCloudTest {
         pricingCalculatorPage.selectLocalSsd();
         pricingCalculatorPage.selectDatacenterLocation();
         pricingCalculatorPage.addToEstimate();
-        //  assertEquals("n1-standard-8 (vCPUs: 8, RAM: 30GB)", pricingCalculatorPage.getMachineTypeDrpDwn().getText());
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Instance type: n1-standard-8", pricingCalculatorPage.getInstanceTypeTest().getText());
     }
 
     @Test
-    @Disabled
     @Order(3)
-    public void verifyVmClass() {
-        assertEquals(pricingCalculatorPage.getMachineTypeDrpDwn()
-                .getAttribute("aria-label"), "Instance type: n1-standard-8 (vCPUs: 8, RAM: 30GB)");
+    @DisplayName("Check the name of the Machine type")
+    public void verifyMachineType() {
+        assertEquals("Instance type: n1-standard-8", pricingCalculatorPage.getInstanceTypeTest().getText());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package page;
 
 import lombok.Getter;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,7 +13,7 @@ public class PricingCalculatorPage extends AbstractPage {
 
     FluentWait<WebDriver> fluentWait = new FluentWait<>(driver);
 
-    @FindBy(xpath = ".//*[starts-with(@name,'goog_')]")
+    @FindBy(xpath = "//iframe[starts-with(@name,'goog_')]")
     private WebElement cloudSideFrame;
 
     @FindBy(id = "myFrame")
@@ -71,6 +72,9 @@ public class PricingCalculatorPage extends AbstractPage {
 
     @FindBy(xpath = "//div[@class='cpc-cart-total']")
     private WebElement totalEstimatedCost;
+
+    @FindBy(xpath = "//div[contains(text(), 'Instance type')]")
+    private WebElement instanceTypeTest;
 
     public PricingCalculatorPage(WebDriver driver) {
         super(driver);
@@ -133,7 +137,13 @@ public class PricingCalculatorPage extends AbstractPage {
     public void addToEstimate() {
         fluentWait.until(ExpectedConditions.elementToBeClickable(addToEstimateBtn));
         addToEstimateBtn.click();
+//        fluentWait.until(ExpectedConditions.visibilityOf(totalEstimatedCost));
+//        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToEstimateBtn);
         fluentWait.until(ExpectedConditions.visibilityOf(totalEstimatedCost));
+    }
+
+    public void refreshPage() {
+        driver.navigate().refresh();
     }
 
 }
