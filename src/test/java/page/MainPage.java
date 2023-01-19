@@ -1,6 +1,8 @@
 package page;
 
 import lombok.Getter;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -28,13 +30,26 @@ public class MainPage extends AbstractPage {
         super(driver);
     }
 
-    public void openPage() {
+    public void openMainPage() {
         driver.get("https://cloud.google.com/");
     }
 
+//    public void closeCookiesPopUp() {
+//        cookiesOkBtn.click();
+//        fluentWait.until(ExpectedConditions.invisibilityOf(cookiesOkBtn));
+//    }
+
     public void closeCookiesPopUp() {
-        cookiesOkBtn.click();
-        fluentWait.until(ExpectedConditions.invisibilityOf(cookiesOkBtn));
+
+        try {
+            if (cookiesOkBtn.isDisplayed()) {
+                cookiesOkBtn.click();
+                fluentWait.until(ExpectedConditions.invisibilityOf(cookiesOkBtn));
+            }
+        }
+        catch (NoSuchElementException e) {
+
+        }
     }
 
     public void openSearchField() {
