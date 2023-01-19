@@ -12,6 +12,7 @@ import page.SearchResultsPage;
 import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GoogleCloudTest {
 
     public static WebDriver driver;
@@ -35,11 +36,17 @@ public class GoogleCloudTest {
                 .ignoring(NoSuchElementException.class);
     }
 
+    @AfterAll
+    public static void driverQuit() {
+        driver.quit();
+        driver = null;
+    }
+
     @Test
     @Order(1)
-    @DisplayName("Search of the Pricing Calculator page")
+    @DisplayName("Search the Pricing Calculator page")
     public void openPricingCalculator() {
-        mainPage.openPage();
+        mainPage.openMainPage();
         fluentWait.until(ExpectedConditions.visibilityOf(mainPage.getCookiesOkBtn()));
         mainPage.closeCookiesPopUp();
         mainPage.openSearchField();
@@ -49,15 +56,15 @@ public class GoogleCloudTest {
         fluentWait.until(ExpectedConditions.visibilityOf(searchResultsPage.getSearchResultsTab()));
         searchResultsPage.clickPricingCalculatorLink();
         assertEquals("https://cloud.google.com/products/calculator", driver.getCurrentUrl());
-        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(pricingCalculatorPage.getCloudSideFrame()));
-        fluentWait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt((pricingCalculatorPage.getMyFrame())));
     }
 
     @Test
     @Order(2)
     @DisplayName("Fill the Calculation Form")
     public void fillCalculationForm() {
-        pricingCalculatorPage.enterNumberOfInstances();
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
         pricingCalculatorPage.selectOperatingSystem();
         pricingCalculatorPage.selectProvisioningModel();
         pricingCalculatorPage.selectMachineType();
@@ -68,54 +75,106 @@ public class GoogleCloudTest {
         pricingCalculatorPage.selectDatacenterLocation();
         pricingCalculatorPage.addToEstimate();
         fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
-        assertEquals("Instance type: n1-standard-8", pricingCalculatorPage.getInstanceTypeTest().getText());
     }
 
     @Test
     @Order(3)
-    @DisplayName("Check the name of the Machine type")
-    public void verifyMachineType() {
-        assertEquals("Instance type: n1-standard-8", pricingCalculatorPage.getInstanceTypeTest().getText());
+    @DisplayName("Verify selected Provisioning Model")
+    public void verifyProvisioningModel() {
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
+        pricingCalculatorPage.selectOperatingSystem();
+        pricingCalculatorPage.selectProvisioningModel();
+        pricingCalculatorPage.selectMachineType();
+        pricingCalculatorPage.checkAddGpuCheckBox();
+        pricingCalculatorPage.selectGpuType();
+        pricingCalculatorPage.selectGpuQuantity();
+        pricingCalculatorPage.selectLocalSsd();
+        pricingCalculatorPage.selectDatacenterLocation();
+        pricingCalculatorPage.addToEstimate();
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Provisioning model: Spot", pricingCalculatorPage.getProvisioningModelOutput().getText());
     }
 
     @Test
-    @Disabled
-    @Order(3)
-    public void verifyInstanceType() {
-
-    }
-
-    @Test
-    @Disabled
     @Order(4)
-    public void verifyRegion() {
-
+    @DisplayName("Verify selected Instance type name")
+    public void verifyInstanceType() {
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
+        pricingCalculatorPage.selectOperatingSystem();
+        pricingCalculatorPage.selectProvisioningModel();
+        pricingCalculatorPage.selectMachineType();
+        pricingCalculatorPage.checkAddGpuCheckBox();
+        pricingCalculatorPage.selectGpuType();
+        pricingCalculatorPage.selectGpuQuantity();
+        pricingCalculatorPage.selectLocalSsd();
+        pricingCalculatorPage.selectDatacenterLocation();
+        pricingCalculatorPage.addToEstimate();
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Instance type: n1-standard-8", pricingCalculatorPage.getInstanceTypeOutput().getText());
     }
 
     @Test
-    @Disabled
     @Order(5)
-    public void verifyLocalSsd() {
-
+    @DisplayName("Verify selected Region")
+    public void verifyRegion() {
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
+        pricingCalculatorPage.selectOperatingSystem();
+        pricingCalculatorPage.selectProvisioningModel();
+        pricingCalculatorPage.selectMachineType();
+        pricingCalculatorPage.checkAddGpuCheckBox();
+        pricingCalculatorPage.selectGpuType();
+        pricingCalculatorPage.selectGpuQuantity();
+        pricingCalculatorPage.selectLocalSsd();
+        pricingCalculatorPage.selectDatacenterLocation();
+        pricingCalculatorPage.addToEstimate();
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Region: Frankfurt", pricingCalculatorPage.getRegionOutput().getText());
     }
 
     @Test
-    @Disabled
     @Order(6)
-    public void verifyCommitmentTerm() {
-
+    @DisplayName("Verify selected Local SSD name")
+    public void verifyLocalSsd() {
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
+        pricingCalculatorPage.selectOperatingSystem();
+        pricingCalculatorPage.selectProvisioningModel();
+        pricingCalculatorPage.selectMachineType();
+        pricingCalculatorPage.checkAddGpuCheckBox();
+        pricingCalculatorPage.selectGpuType();
+        pricingCalculatorPage.selectGpuQuantity();
+        pricingCalculatorPage.selectLocalSsd();
+        pricingCalculatorPage.selectDatacenterLocation();
+        pricingCalculatorPage.addToEstimate();
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Local SSD: 2x375 GiB", pricingCalculatorPage.getLocalSsdOutput().getText());
     }
 
     @Test
-    @Disabled
     @Order(7)
+    @DisplayName("Verify calculated Total Cost")
     public void verifyCalculatedCost() {
-
+        pricingCalculatorPage.openPage();
+        mainPage.closeCookiesPopUp();
+        pricingCalculatorPage.enterNumberOfInstances("4");
+        pricingCalculatorPage.selectOperatingSystem();
+        pricingCalculatorPage.selectProvisioningModel();
+        pricingCalculatorPage.selectMachineType();
+        pricingCalculatorPage.checkAddGpuCheckBox();
+        pricingCalculatorPage.selectGpuType();
+        pricingCalculatorPage.selectGpuQuantity();
+        pricingCalculatorPage.selectLocalSsd();
+        pricingCalculatorPage.selectDatacenterLocation();
+        pricingCalculatorPage.addToEstimate();
+        fluentWait.until(ExpectedConditions.visibilityOf(pricingCalculatorPage.getTotalEstimatedCost()));
+        assertEquals("Total Estimated Cost: USD 2,563.32 per 1 month", pricingCalculatorPage.getTotalEstimatedCost().getText());
     }
 
-    @AfterAll
-    public static void driverQuit() {
-        driver.quit();
-        driver = null;
-    }
 }
